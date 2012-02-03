@@ -1,3 +1,8 @@
+NOTE: My fork also works for /var/satellite directory where spacewalk stores the rpms. 
+No need to clone them to a locally-held yum repository as you need to with the original centos-errata.py
+
+Big thx to David Nutter for coding the original !!
+
 This tool will take a collection of postings from the "centos-announce" mailing
 list. It can accept a digest, a decompressed pipermail archive downloaded from
 the list archive pages[1] or use the Mail Archive site, convert the postings to
