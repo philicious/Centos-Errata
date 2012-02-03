@@ -41,6 +41,8 @@ import traceback
 import urllib
 import xmlrpclib
 
+rpm_dict=dict()
+
 class RHNSystem:
     def __init__(self,sysid,name,lastCheckin):
         self.systemid=sysid
@@ -1069,6 +1071,7 @@ class SearchStrategy(object):
         rpmQuery = rpm.ts()
         try:
             fd = os.open(pkgfile, os.O_RDONLY)
+            rpmQuery.setVSFlags(rpm._RPMVSF_NOSIGNATURES) 
             header = rpmQuery.hdrFromFdno(fd)
             os.close(fd)
         except Exception,msg:
@@ -1090,12 +1093,12 @@ class SearchDir(SearchStrategy):
         if erratum.x_isFastTrack:                
             package_dir = self.config.get_fasttrack_package_dir(erratum_arch)
         else:
-            package_dir = self.config.get_package_dir(erratum_arch)
+            package_dir = rpm_dict[pkg_info.filename]
 
         #TODO: could compare checksums here
-        rpm_pkg_info = SearchStrategy.processRPMFile(package_dir+pkg_info.filename)
+        rpm_pkg_info = SearchStrategy.processRPMFile(package_dir)
         if rpm_pkg_info is None:
-            print "Warning: package %s%s does not exist or cannot be read." % (package_dir,pkg_info.filename)
+            print "Warning: package %s does not exist or cannot be read." % (package_dir)
 
         return rpm_pkg_info
     
@@ -1465,9 +1468,19 @@ def check_input_file(args):
 
     return inputFile
 
+def load_rpm_dict():
+
+    path="/var/satellite/"
+    for (root, folders, files) in os.walk(path):
+        for f in files:
+            if os.path.splitext(f)[1] != ".rpm": continue
+            rpm_dict[f] = os.path.join(root, f)
+
 def main():
     script_config = process_args()
-
+    
+    load_rpm_dict()
+    
     if script_config.options.testmode or script_config.options.print_config:
         print "Current configuration:"
         for option,value in script_config.options.__dict__.items():
