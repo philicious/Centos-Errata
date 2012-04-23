@@ -1093,7 +1093,10 @@ class SearchDir(SearchStrategy):
         if erratum.x_isFastTrack:                
             package_dir = self.config.get_fasttrack_package_dir(erratum_arch)
         else:
-            package_dir = rpm_dict[pkg_info.filename]
+            if pkg_info.filename in rpm_dict.keys():
+                package_dir = rpm_dict[pkg_info.filename]
+            else:
+                package_dir = None
 
         #TODO: could compare checksums here
         rpm_pkg_info = SearchStrategy.processRPMFile(package_dir)
