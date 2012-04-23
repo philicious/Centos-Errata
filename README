@@ -1,6 +1,9 @@
 NOTE: My fork also works for /var/satellite directory where spacewalk stores the rpms. 
 No need to clone them to a locally-held yum repository as you need to with the original centos-errata.py
 
+NOTE2: If you are just setting up your repos, I suggest to use sha256 checksum and this fork here https://github.com/unreality/Centos-Errata/tree/
+Mine is only meant to keep errata working with md5-checksum.
+
 Big thx to David Nutter for coding the original !!
 
 This tool will take a collection of postings from the "centos-announce" mailing
